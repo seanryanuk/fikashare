@@ -11,6 +11,7 @@ def build_executable():
         "--onedir",
         "--windowed",
         "--name=FikaShare",
+        "--collect-all=PySide6",
         "--add-data=profile_parser.py:.",
         "--add-data=sync_engine.py:.",
         "--add-data=upnp_tunnel.py:.",
