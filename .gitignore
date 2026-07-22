@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+ENV/
+
+# PyInstaller Build Artifacts
+build/
+dist/
+*.manifest
+*.spec
+
+# Application Data & Config
+fikashare_config.json
+FikaShare_Backups/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

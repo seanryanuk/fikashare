@@ -1,0 +1,59 @@
+name: Build FikaShare Cross-Platform Executables
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build Executable with PyInstaller
+        run: |
+          python build.py
+
+      - name: Archive Artifact (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          powershell Compress-Archive -Path dist/FikaShare -DestinationPath FikaShare-Windows.zip
+
+      - name: Archive Artifact (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          tar -czvf FikaShare-Linux.tar.gz -C dist FikaShare
+
+      - name: Upload Windows Build Artifact
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: FikaShare-Windows
+          path: FikaShare-Windows.zip
+
+      - name: Upload Linux Build Artifact
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: FikaShare-Linux
+          path: FikaShare-Linux.tar.gz
